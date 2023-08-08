@@ -1,48 +1,12 @@
 const fs = require('fs')
 const http = require('https')
-const binaryFiles = ['.jpg', '.jpeg', '.gif', '.png', '.mp3', '.ogg', '.mp4']
-const urls = {}
-const dirnames = {}
-const files = {}
+const {getUrl, getDirname, getFile} = require('./utils')
 const downloads = {}
 
-const getKey = (domain, filename) => {
-  return `${domain}/${filename}`
-}
-
-const getUrl = (domain, filename) => {
-  const key = getKey(domain, filename)
-
-  if (! urls[key]) {
-    urls[key] = `https://${domain}/${filename}`
-  }
-
-  return urls[key]
-}
-
-const getDirname = (domain, filename) => {
-  const key = getKey(domain, filename)
-
-  if (! dirnames[key]) {
-    dirnames[key] = `${domain}/${filename}`.replace(/\/[^\/]+\.[^\/]+$/, '').replace(/^\/+/, '')
-  }
-
-  return dirnames[key]
-}
-
-const getFile = (filename) => {
-  if (! files[filename]) {
-    const file = filename.match(/[^\/]+\.[^\/]+$/)
-    files[filename] = file ? file[0] : 'index.html'
-  }
-
-  return files[filename]
-}
-
-const get = (domain, filename) => {
+const get = (domain, filename, onDownloaded) => {
   const url = getUrl(domain, filename)
 
-  if (downloads[urls]) return
+  if (downloads[url]) return
 
   const dirname = getDirname(domain, filename)
   const file = getFile(filename)
@@ -60,25 +24,9 @@ const get = (domain, filename) => {
       f.close()
       console.log(`${dirname}/${file} saved`)
       downloads[url] = true
-      parse(domain, filename, response.headers['content-type'])
+      onDownloaded && onDownloaded(response.headers['content-type'])
     })
   })
-}
-
-const parse = (domain, filename, contentType) => {
-  if (contentType.indexOf('text') === false) {
-    return
-  }
-
-  const dirname = getDirname(domain, filename)
-  const file = getFile(filename)
-  const content = fs.readFileSync(`${dirname}/${file}`).toString()
-  const m = content.matchAll(/<a[^>]+href=['"](.*?)['"]/g)
-  const urls = []
-
-  for (let i of m) {
-    urls.push(i[1])
-  }
 }
 
 module.exports = {
