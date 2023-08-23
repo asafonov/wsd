@@ -17,10 +17,14 @@ const getUrl = (domain, filename) => {
 }
 
 const getDirname = (domain, filename) => {
-  const key = getKey(domain, filename)
+  return `${domain}${getServerDir(filename)}`
+}
+
+const getServerDir = (filename) => {
+  const key = filename
 
   if (! dirnames[key]) {
-    dirnames[key] = `${domain}/${filename}`.replace(/\/[^\/]+\.[^\/]+$/, '').replace(/^\/+/, '')
+    dirnames[key] = `/${filename}`.replace(/\/[^\/]+\.[^\/]+$/, '').replace(/^\/+/, '')
   }
 
   return dirnames[key]
@@ -38,5 +42,6 @@ const getFile = (filename) => {
 module.exports = {
   getUrl: getUrl,
   getDirname: getDirname,
-  getFile: getFile
+  getFile: getFile,
+  getServerDir: getServerDir
 }
