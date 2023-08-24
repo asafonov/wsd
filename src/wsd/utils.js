@@ -17,14 +17,14 @@ const getUrl = (domain, filename) => {
 }
 
 const getDirname = (domain, filename) => {
-  return `${domain}${getServerDir(filename)}`
+  return `${domain}/${getServerDir(filename)}`
 }
 
 const getServerDir = (filename) => {
   const key = filename
 
   if (! dirnames[key]) {
-    dirnames[key] = `/${filename}`.replace(/\/[^\/]+\.[^\/]+$/, '').replace(/^\/+/, '')
+    dirnames[key] = filename.replace(/\/[^\/]+\.[^\/]+$/, '').replace(/^\/+/, '')
   }
 
   return dirnames[key]
