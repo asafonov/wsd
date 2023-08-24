@@ -10,7 +10,8 @@ const init = domain => {
 }
 
 const process = (domain, filename) => {
-  downloader.get(domain, '', contentType => {
+  console.log(`Processing ${filename}`)
+  downloader.get(domain, filename, contentType => {
     parser.parse(domain, filename, contentType, (domain, filename) => process(domain, filename))
   })
 }

@@ -1,7 +1,7 @@
 const fs = require('fs')
 const {getUrl, getDirname, getFile, getServerDir} = require('./utils')
 
-const parse = (domain, filename, contentType) => {
+const parse = (domain, filename, contentType, onUrlFound) => {
   if (contentType.indexOf('text') === false) {
     return
   }
@@ -13,14 +13,13 @@ const parse = (domain, filename, contentType) => {
   const urls = []
 
   for (let i of m) {
-    urls.push(parseUrl(i[1], domain, filename))
+    const url = parseUrl(i[1], domain, filename)
+    url && onUrlFound(domain, url)
   }
-
-  console.log(urls)
 }
 
 const parseUri = (url, domain, filename) => {
-  return `URI:${url}`
+  return
 }
 
 const parseLocal = (url, domain, filename) => {
