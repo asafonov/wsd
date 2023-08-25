@@ -7,7 +7,7 @@ const processed = {}
 const init = domain => {
   domain = domain
   console.log(`Working on ${domain}`)
-  process(domain, '')
+  process(domain, '/')
 }
 
 const process = (domain, filename) => {

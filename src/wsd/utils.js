@@ -6,18 +6,22 @@ const getKey = (domain, filename) => {
   return `${domain}/${filename}`
 }
 
+const unslash = str => {
+  return str.replace(/\/+/g, '/')
+}
+
 const getUrl = (domain, filename) => {
   const key = getKey(domain, filename)
 
   if (! urls[key]) {
-    urls[key] = `https://${domain}/${filename}`
+    urls[key] = unslash(`https://${domain}/${filename}`)
   }
 
   return urls[key]
 }
 
 const getDirname = (domain, filename) => {
-  return `${domain}/${getServerDir(filename)}`
+  return unslash(`${domain}/${getServerDir(filename)}`)
 }
 
 const getServerDir = (filename) => {

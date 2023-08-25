@@ -26,7 +26,7 @@ const parseLocal = (url, domain, filename) => {
   if (url[0] === '/') {
     return url
   } else {
-    return `${getServerDir(domain, filename)}/${url}`
+    return `${getServerDir(filename)}/${url}`
   }
 }
 
