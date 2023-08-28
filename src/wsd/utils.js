@@ -24,7 +24,7 @@ const getDirname = (domain, filename) => {
   return unslash(`${domain}/${getServerDir(filename)}`)
 }
 
-const getServerDir = (filename) => {
+const getServerDir = filename => {
   const key = filename
 
   if (! dirnames[key]) {
@@ -34,7 +34,7 @@ const getServerDir = (filename) => {
   return dirnames[key]
 }
 
-const getFile = (filename) => {
+const getFile = filename => {
   if (! files[filename]) {
     const file = filename.match(/[^\/]+\.[^\/]+$/)
     files[filename] = file ? file[0] : 'index.html'

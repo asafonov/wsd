@@ -8,14 +8,20 @@ const parse = (domain, filename, contentType, onUrlFound) => {
 
   const dirname = getDirname(domain, filename)
   const file = getFile(filename)
-  const content = fs.readFileSync(`${dirname}/${file}`).toString()
+  let content = fs.readFileSync(`${dirname}/${file}`).toString()
   const m = content.matchAll(/<a[^>]+href=['"](.*?)['"]/g)
   const urls = []
 
   for (let i of m) {
     const url = parseUrl(i[1], domain, filename)
-    url && onUrlFound(domain, url)
+
+    if (url) {
+      onUrlFound(domain, url)
+      content = content.replace(new RegExp(`['"]${i[1]}['"]`, 'g'), `"${url}"`)
+    }
   }
+
+  fs.writeFileSync(`${dirname}/${file}`, content)
 }
 
 const parseUri = (url, domain, filename) => {
