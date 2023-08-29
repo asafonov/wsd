@@ -2,15 +2,20 @@ const fs = require('fs')
 const {getUrl, getDirname, getFile, getServerDir} = require('./utils')
 
 const parse = (domain, filename, contentType, onUrlFound) => {
-  if (contentType.indexOf('text') === false) {
+  if (contentType.indexOf('text') === -1) {
     return
   }
 
   const dirname = getDirname(domain, filename)
   const file = getFile(filename)
   let content = fs.readFileSync(`${dirname}/${file}`).toString()
-  const m = content.matchAll(/<a[^>]+href=['"](.*?)['"]/g)
-  const urls = []
+  content = processUrls(/<a[^>]+href=['"](.*?)['"]/g, content, domain, filename, onUrlFound)
+  content = processUrls(/<img[^>]+src=['"](.*?)['"]/g, content, domain, filename, onUrlFound)
+  fs.writeFileSync(`${dirname}/${file}`, content)
+}
+
+const processUrls = (regex, content, domain, filename, onUrlFound) => {
+  const m = content.matchAll(regex)
 
   for (let i of m) {
     const url = parseUrl(i[1], domain, filename)
@@ -21,11 +26,16 @@ const parse = (domain, filename, contentType, onUrlFound) => {
     }
   }
 
-  fs.writeFileSync(`${dirname}/${file}`, content)
+  return content
+}
+
+const isEmptyUrl = url => {
+  return url.indexOf('mailto:') === 0
 }
 
 const parseUri = (url, domain, filename) => {
-  return
+  const uri = new URL(url)
+  return uri.hostname === domain ? uri.pathname + uri.search : null
 }
 
 const parseLocal = (url, domain, filename) => {
@@ -39,6 +49,8 @@ const parseLocal = (url, domain, filename) => {
 const parseUrl = (url, domain, filename) => {
   if (url.indexOf('://') > -1) {
     return parseUri(url, domain, filename)
+  } else if (isEmptyUrl(url)) {
+    return
   } else {
     return parseLocal(url, domain, filename)
   }
