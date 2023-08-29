@@ -11,6 +11,7 @@ const parse = (domain, filename, contentType, onUrlFound) => {
   let content = fs.readFileSync(`${dirname}/${file}`).toString()
   content = processUrls(/<a[^>]+href=['"](.*?)['"]/g, content, domain, filename, onUrlFound)
   content = processUrls(/<img[^>]+src=['"](.*?)['"]/g, content, domain, filename, onUrlFound)
+  content = processUrls(/<link[^>]+href=['"](.*?)['"]/g, content, domain, filename, onUrlFound)
   fs.writeFileSync(`${dirname}/${file}`, content)
 }
 
