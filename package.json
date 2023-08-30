@@ -1,5 +1,5 @@
 {
-  "name": "wsd",
+  "name": "asafonov-wsd",
   "description": "wsd is a tool that allows you to download websites",
   "version": "0.1.0",
   "main": "app.js",
