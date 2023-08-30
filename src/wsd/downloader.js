@@ -17,8 +17,10 @@ const get = (domain, filename, onDownloaded) => {
 
   console.log(`Getting ${url}`)
 
-  const f = fs.createWriteStream(`${dirname}/${file}`)
   const request = http.get(url, response => {
+    if (response.statusCode !== 200) return
+
+    const f = fs.createWriteStream(`${dirname}/${file}`)
     response.pipe(f)
     f.on('finish', () => {
       f.close()
